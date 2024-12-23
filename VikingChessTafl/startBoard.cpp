@@ -16,8 +16,53 @@ char** getBoard(int N)
 		board[i] = row;
 	}
 	board[N] = nullptr;
-	board[5][6] = 'K';
+	board[0][0] = 'K';
+	board[0][1] = 'A';
+	board[0][2] = 'D';
 	return board;
+}
+
+void drawPieceImage(char** boardImage, int row, int column, char piece)
+{
+	switch (piece)
+	{
+		case 'A':
+			boardImage[row][column - 1] = piece;
+			boardImage[row][column + 1] = piece;
+			boardImage[row + 1][column + 2] = piece;
+			boardImage[row + 1][column - 2] = piece;
+			boardImage[row - 1][column] = piece;
+			break;
+		case 'D':
+			boardImage[row - 1][column - 1] = piece;
+			boardImage[row - 1][column] = piece;
+			boardImage[row][column - 1] = piece;
+			boardImage[row][column + 1] = piece;
+			boardImage[row + 1][column - 1] = piece;
+			boardImage[row + 1][column] = piece;
+			break;
+		case 'K':
+			boardImage[row - 1][column - 1] = piece;
+			boardImage[row][column - 1] = piece;
+			boardImage[row + 1][column - 1] = piece;
+			boardImage[row][column] = piece;
+			boardImage[row - 1][column + 1] = piece;
+			boardImage[row + 1][column + 1] = piece;
+			break;
+		default:
+			break;
+	}
+}
+
+void drawPieces(char** board, char** boardImage, int boardSize)
+{
+	for (int i = 0; i < boardSize; i++)
+	{
+		for (int j = 0; j < boardSize; j++)
+		{
+			drawPieceImage(boardImage, i * 4 + 2, j * 6 + 3, board[i][j]);
+		}
+	}
 }
 
 char** getBoardImage(char** board, int boardSize)
@@ -51,6 +96,7 @@ char** getBoardImage(char** board, int boardSize)
 		boardImage[i] = row;
 	}
 	boardImage[tableHeight] = nullptr;
+	drawPieces(board, boardImage, boardSize);
 	return boardImage;
 }
 
