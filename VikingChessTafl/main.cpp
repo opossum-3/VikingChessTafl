@@ -7,7 +7,7 @@ void clearConsole() {
 	cout << "\033[J"; // Clears the console
 }
 
-int handleInput()
+int startInput()
 {
 	char input;
 	cin >> input;
@@ -15,30 +15,45 @@ int handleInput()
 	{
 		case 's':
 			clearConsole();
-			break;
+			cout << "Game started" << endl;
+			return 1;
 		case 'q':
 			clearConsole();
-			cout << "Quitting..." << endl;
-			break;
+			cout << "Game quit" << endl;
+			return 0;
 		default:
 			cout << "Invalid input!" << endl;
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			return 1;
+			return -1;
 	}
 	return 0;
+}
+
+void startGame()
+{
+	int boardSize = chooseBoardSize();
+	char** board = getBoard(boardSize);
+	printBoard(board, boardSize);
 }
 
 int main()
 {
 	cout << "Tafl - Viking chess" << endl;
 	cout << endl;
-	do
+	while (true)
 	{
 		cout << "Type (s) to start" << endl;
 		cout << "Type (q) to quit" << endl;
 		cout << endl;
-	} while (handleInput());
-	int boardSize = chooseBoardSize();
-	char** board = getBoard(boardSize);
-	printBoard(board, boardSize);
+		int inputResult = startInput();
+		if (inputResult == 1)
+		{
+			startGame();
+			break;
+		}
+		else if (inputResult == 0)
+		{
+			break;
+		}
+	}
 }
