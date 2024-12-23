@@ -1,3 +1,5 @@
 #define startBoard
 
-void chooseBoardSize();
+char** getBoard(int boardSize);
+int chooseBoardSize();
+void printBoard(char** board, int boardSize);

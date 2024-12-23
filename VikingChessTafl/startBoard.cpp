@@ -2,33 +2,92 @@
 #include "startBoard.h"
 using namespace std;
 
-void chooseBoardSize()
+char** getBoard(int N)
 {
-	int N = 0;
+	char** board = new char* [N + 1];
+	for (int i = 0; i < N; i++)
+	{
+		char* row = new char[N + 1];
+		for (int j = 0; j < N; j++)
+		{
+			row[j] = ' ';
+		}
+		row[N] = '\0';
+		board[i] = row;
+	}
+	board[N] = nullptr;
+	board[5][6] = 'K';
+	return board;
+}
+
+char** getBoardImage(char** board, int boardSize)
+{
+	int pieceRow = 0, pieceColumn = 0;
+	int tableWidth = 6 * boardSize + 1;
+	int tableHeight = 4 * boardSize + 1;
+	char** boardImage = new char* [tableHeight + 1];
+	for (int i = 0; i < tableHeight; i++)
+	{
+		char* row = new char[tableWidth + 1];
+		for (int j = 0; j < tableWidth; j++)
+		{
+			if (i % 4 == 0)
+			{
+				row[j] = '-';
+			}
+			else
+			{
+				if (j % 6 == 0)
+				{
+					row[j] = '|';
+				}
+				else
+				{
+					row[j] = ' ';
+				}
+			}
+		}
+		row[tableWidth] = '\0';
+		boardImage[i] = row;
+	}
+	boardImage[tableHeight] = nullptr;
+	return boardImage;
+}
+
+void printBoard(char** board, int boardSize)
+{
+	char** image = getBoardImage(board, boardSize);
+	int index = 0;
+	while (image[index] != nullptr)
+	{
+		cout << image[index] << endl;
+		index++;
+	}
+	for (int i = 0; i < boardSize; i++)
+	{
+		delete[boardSize + 1] image[i];
+	}
+	delete[boardSize + 1] image;
+}
+
+int chooseBoardSize()
+{
+	int boardSize = 0;
 	while (true)
 	{
 		cout << "Board size NxN, input N (9, 11 or 13):" << endl;
-		cin >> N;
+		cin >> boardSize;
 		if (cin.fail())
 		{
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
-		if (N == 9)
+		if (boardSize == 9  || boardSize == 11 || boardSize == 13)
 		{
-			cout << "Board size 9x9 chosen" << endl;
-			break;
-		}
-		if (N == 11)
-		{
-			cout << "Board size 11x11 chosen" << endl;
-			break;
-		}
-		if (N == 13)
-		{
-			cout << "Board size 13x13 chosen" << endl;
+			cout << "Board size " << boardSize << "x" << boardSize << " chosen" << endl;
 			break;
 		}
 		cout << "Invalid input!" << endl;
 	}
+	return boardSize;
 }

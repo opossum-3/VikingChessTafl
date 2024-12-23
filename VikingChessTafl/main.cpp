@@ -15,7 +15,6 @@ int handleInput()
 	{
 		case 's':
 			clearConsole();
-			chooseBoardSize();
 			break;
 		case 'q':
 			clearConsole();
@@ -39,4 +38,7 @@ int main()
 		cout << "Type (q) to quit" << endl;
 		cout << endl;
 	} while (handleInput());
+	int boardSize = chooseBoardSize();
+	char** board = getBoard(boardSize);
+	printBoard(board, boardSize);
 }
