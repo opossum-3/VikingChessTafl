@@ -1,4 +1,5 @@
 #include <iostream>
+#include "startBoard.h"
 using namespace std;
 
 void clearConsole() {
@@ -14,7 +15,7 @@ int handleInput()
 	{
 		case 's':
 			clearConsole();
-			cout << "Starting..." << endl;
+			chooseBoardSize();
 			break;
 		case 'q':
 			clearConsole();
@@ -22,6 +23,7 @@ int handleInput()
 			break;
 		default:
 			cout << "Invalid input!" << endl;
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			return 1;
 	}
 	return 0;
