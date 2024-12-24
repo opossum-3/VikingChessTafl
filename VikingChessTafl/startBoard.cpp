@@ -5,24 +5,86 @@ using namespace std;
 const int CELL_WIDTH = 6;
 const int CELL_HEIGHT = 4;
 
-char** getBoard(int N)
+void positionDefenders(char** board, int boardSize)
 {
-	char** board = new char* [N + 1];
-	for (int i = 0; i < N; i++)
+	int center = boardSize / 2;
+	int padding = boardSize == 13 ? 3 : 2;
+	for (int i = -padding; i <= padding; i++)
 	{
-		char* row = new char[N + 1];
-		for (int j = 0; j < N; j++)
+		if (i == 0)
+		{
+			continue;
+		}
+		board[center][center + i] = 'D';
+		board[center + i][center] = 'D';
+	}
+	if (boardSize > 9) 
+	{
+		board[center - 1][center - 1] = 'D';
+		board[center - 1][center + 1] = 'D';
+		board[center + 1][center - 1] = 'D';
+		board[center + 1][center + 1] = 'D';
+	}
+}
+
+void positionAttackers(char** board, int boardSize)
+{
+	int center = boardSize / 2;
+	int padding = 1;
+	switch (boardSize)
+	{
+		case 9:
+			padding = 1;
+			break;
+		case 11:
+			padding = 2;
+			break;
+		case 13:
+			padding = 3;
+			break;
+		default:
+			break;
+	}
+	for (int i = -padding; i <= padding; i++)
+	{
+		board[center + i][0] = 'A';
+		board[0][center + i] = 'A';
+		board[center + i][boardSize - 1] = 'A';
+		board[boardSize - 1][center + i] = 'A';
+	}
+	board[center][1] = 'A';
+	board[1][center] = 'A';
+	board[center][boardSize - 2] = 'A';
+	board[boardSize - 2][center] = 'A';
+}
+
+void positionPieces(char** board, int boardSize)
+{
+	int center = boardSize / 2;
+	board[center][center] = 'K';
+	positionDefenders(board, boardSize);
+	positionAttackers(board, boardSize);
+}
+
+char** getBoard(int boardSize)
+{
+	char** board = new char* [boardSize + 1];
+	for (int i = 0; i < boardSize; i++)
+	{
+		char* row = new char[boardSize + 1];
+		for (int j = 0; j < boardSize; j++)
 		{
 			row[j] = ' ';
 		}
-		row[N] = '\0';
+		row[boardSize] = '\0';
 		board[i] = row;
 	}
-	board[N] = nullptr;
-	board[0][0] = 'K';
-	board[0][1] = 'A';
-	board[0][2] = 'D';
-	board[1][0] = 'X';
+	board[boardSize] = nullptr;
+	board[0][0] = 'X';
+	board[0][boardSize - 1] = 'X';
+	board[boardSize - 1][0] = 'X';
+	board[boardSize - 1][boardSize - 1] = 'X';
+	positionPieces(board, boardSize);
 	return board;
 }
 
