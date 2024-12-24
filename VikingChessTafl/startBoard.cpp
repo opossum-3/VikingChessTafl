@@ -22,6 +22,7 @@ char** getBoard(int N)
 	board[0][0] = 'K';
 	board[0][1] = 'A';
 	board[0][2] = 'D';
+	board[1][0] = 'X';
 	return board;
 }
 
@@ -53,6 +54,13 @@ void drawPieceImage(char** boardImage, int row, int column, char piece)
 			boardImage[row - 1][column + 1] = piece;
 			boardImage[row + 1][column + 1] = piece;
 			break;
+		case 'X':
+			boardImage[row - 1][column - 2] = piece;
+			boardImage[row - 1][column + 2] = piece;
+			boardImage[row][column] = piece;
+			boardImage[row + 1][column - 2] = piece;
+			boardImage[row + 1][column + 2] = piece;
+			break;
 		default:
 			break;
 	}
@@ -74,21 +82,21 @@ void drawPieces(char** board, char** boardImage, int boardSize)
 char** getBoardImage(char** board, int boardSize)
 {
 	int pieceRow = 0, pieceColumn = 0;
-	int tableWidth = 6 * boardSize + 1;
-	int tableHeight = 4 * boardSize + 1;
+	int tableWidth = CELL_WIDTH * boardSize + 1;
+	int tableHeight = CELL_HEIGHT * boardSize + 1;
 	char** boardImage = new char* [tableHeight + 1];
 	for (int i = 0; i < tableHeight; i++)
 	{
 		char* row = new char[tableWidth + 1];
 		for (int j = 0; j < tableWidth; j++)
 		{
-			if (i % 4 == 0)
+			if (i % CELL_HEIGHT == 0)
 			{
 				row[j] = '-';
 			}
 			else
 			{
-				if (j % 6 == 0)
+				if (j % CELL_WIDTH == 0)
 				{
 					row[j] = '|';
 				}
