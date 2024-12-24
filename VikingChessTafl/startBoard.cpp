@@ -26,55 +26,55 @@ char** getBoard(int N)
 	return board;
 }
 
-void drawPieceImage(char** boardImage, int row, int column, char piece)
+void drawSymbolImage(char** boardImage, int row, int column, char symbol)
 {
-	switch (piece)
+	switch (symbol)
 	{
 		case 'A':
-			boardImage[row][column - 1] = piece;
-			boardImage[row][column + 1] = piece;
-			boardImage[row + 1][column + 2] = piece;
-			boardImage[row + 1][column - 2] = piece;
-			boardImage[row][column] = piece;
-			boardImage[row - 1][column] = piece;
+			boardImage[row][column - 1] = symbol;
+			boardImage[row][column + 1] = symbol;
+			boardImage[row + 1][column + 2] = symbol;
+			boardImage[row + 1][column - 2] = symbol;
+			boardImage[row][column] = symbol;
+			boardImage[row - 1][column] = symbol;
 			break;
 		case 'D':
-			boardImage[row - 1][column - 1] = piece;
-			boardImage[row - 1][column] = piece;
-			boardImage[row][column - 1] = piece;
-			boardImage[row][column + 1] = piece;
-			boardImage[row + 1][column - 1] = piece;
-			boardImage[row + 1][column] = piece;
+			boardImage[row - 1][column - 1] = symbol;
+			boardImage[row - 1][column] = symbol;
+			boardImage[row][column - 1] = symbol;
+			boardImage[row][column + 1] = symbol;
+			boardImage[row + 1][column - 1] = symbol;
+			boardImage[row + 1][column] = symbol;
 			break;
 		case 'K':
-			boardImage[row - 1][column - 1] = piece;
-			boardImage[row][column - 1] = piece;
-			boardImage[row + 1][column - 1] = piece;
-			boardImage[row][column] = piece;
-			boardImage[row - 1][column + 1] = piece;
-			boardImage[row + 1][column + 1] = piece;
+			boardImage[row - 1][column - 1] = symbol;
+			boardImage[row][column - 1] = symbol;
+			boardImage[row + 1][column - 1] = symbol;
+			boardImage[row][column] = symbol;
+			boardImage[row - 1][column + 1] = symbol;
+			boardImage[row + 1][column + 1] = symbol;
 			break;
 		case 'X':
-			boardImage[row - 1][column - 2] = piece;
-			boardImage[row - 1][column + 2] = piece;
-			boardImage[row][column] = piece;
-			boardImage[row + 1][column - 2] = piece;
-			boardImage[row + 1][column + 2] = piece;
+			boardImage[row - 1][column - 2] = symbol;
+			boardImage[row - 1][column + 2] = symbol;
+			boardImage[row][column] = symbol;
+			boardImage[row + 1][column - 2] = symbol;
+			boardImage[row + 1][column + 2] = symbol;
 			break;
 		default:
 			break;
 	}
 }
 
-void drawPieces(char** board, char** boardImage, int boardSize)
+void drawSymbols(char** board, char** boardImage, int boardSize)
 {
 	for (int i = 0; i < boardSize; i++)
 	{
 		for (int j = 0; j < boardSize; j++)
 		{
-			int height = i * CELL_HEIGHT + CELL_HEIGHT / 2;
-			int width = j * CELL_WIDTH + CELL_WIDTH / 2;
-			drawPieceImage(boardImage, height, width, board[i][j]);
+			int vertPosition = i * CELL_HEIGHT + CELL_HEIGHT / 2;
+			int horPosition = j * CELL_WIDTH + CELL_WIDTH / 2;
+			drawSymbolImage(boardImage, vertPosition, horPosition, board[i][j]);
 		}
 	}
 }
@@ -96,21 +96,14 @@ char** getBoardImage(char** board, int boardSize)
 			}
 			else
 			{
-				if (j % CELL_WIDTH == 0)
-				{
-					row[j] = '|';
-				}
-				else
-				{
-					row[j] = ' ';
-				}
+				row[j] = (j % CELL_WIDTH == 0) ? '|' : ' ';
 			}
 		}
 		row[tableWidth] = '\0';
 		boardImage[i] = row;
 	}
 	boardImage[tableHeight] = nullptr;
-	drawPieces(board, boardImage, boardSize);
+	drawSymbols(board, boardImage, boardSize);
 	return boardImage;
 }
 
