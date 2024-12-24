@@ -176,7 +176,7 @@ void printBoard(char** board, int boardSize)
 	int index = 0;
 	while (image[index] != nullptr)
 	{
-		cout << image[index];
+		cout << "       " << image[index];
 		// Draw vertical coordinates
 		if (index % CELL_HEIGHT == CELL_HEIGHT / 2)
 		{
@@ -186,7 +186,7 @@ void printBoard(char** board, int boardSize)
 		index++;
 	}
 	// Draw horizontal coordinates
-	cout << endl;
+	cout << endl << "       ";
 	int tableWidth = CELL_WIDTH * boardSize + 1;
 	for (int i = 0; i < tableWidth; i++)
 	{

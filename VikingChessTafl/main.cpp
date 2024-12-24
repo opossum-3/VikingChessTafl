@@ -37,6 +37,17 @@ void startGame()
 	printBoard(board, boardSize);
 }
 
+void turn()
+{
+	char input[BUFFER_SIZE];
+	cin.getline(input, BUFFER_SIZE);
+	lower(input);
+	if (isPrefix("start", input))
+	{
+
+	}
+}
+
 int main()
 {
 	cout << "Tafl - Viking chess" << endl;
@@ -50,6 +61,7 @@ int main()
 		if (inputResult == 1)
 		{
 			startGame();
+			turn();
 			break;
 		}
 		else if (inputResult == 0)

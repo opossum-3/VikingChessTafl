@@ -2,6 +2,18 @@
 #include "textFunctions.h"
 using namespace std;
 
+const char TO_LOWER = 'a' - 'A';
+
+bool isDigit(char symbol)
+{
+	return symbol >= '0' && symbol <= '9';
+}
+
+bool isCapital(char symbol)
+{
+	return symbol >= 'A' && symbol <= 'Z';
+}
+
 int stringLength(const char* text)
 {
 	if (text == nullptr)
@@ -44,4 +56,40 @@ bool areEqual(const char* text1, const char* text2)
 	}
 	bool areEqualLengths = stringLength(text1) == stringLength(text2);
 	return isPrefix(text1, text2) && areEqualLengths;
+}
+
+void lower(char* text)
+{
+	if (text == nullptr)
+	{
+		cout << "Invalid argument!" << endl;
+		return;
+	}
+	while (*text != '\0')
+	{
+		if (isCapital(*text))
+		{
+			*text = *text + TO_LOWER;
+		}
+		text++;
+	}
+}
+
+int occurrenceCount(const char* text, char symbol)
+{
+	if (text == nullptr)
+	{
+		cout << "Invalid argument!" << endl;
+		return -1;
+	}
+	int count = 0;
+	while (*text != '\0')
+	{
+		if (*text == symbol)
+		{
+			count++;
+		}
+		text++;
+	}
+	return count;
 }
