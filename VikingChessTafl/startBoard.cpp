@@ -2,6 +2,9 @@
 #include "startBoard.h"
 using namespace std;
 
+const int CELL_WIDTH = 6;
+const int CELL_HEIGHT = 4;
+
 char** getBoard(int N)
 {
 	char** board = new char* [N + 1];
@@ -31,6 +34,7 @@ void drawPieceImage(char** boardImage, int row, int column, char piece)
 			boardImage[row][column + 1] = piece;
 			boardImage[row + 1][column + 2] = piece;
 			boardImage[row + 1][column - 2] = piece;
+			boardImage[row][column] = piece;
 			boardImage[row - 1][column] = piece;
 			break;
 		case 'D':
@@ -60,7 +64,9 @@ void drawPieces(char** board, char** boardImage, int boardSize)
 	{
 		for (int j = 0; j < boardSize; j++)
 		{
-			drawPieceImage(boardImage, i * 4 + 2, j * 6 + 3, board[i][j]);
+			int height = i * CELL_HEIGHT + CELL_HEIGHT / 2;
+			int width = j * CELL_WIDTH + CELL_WIDTH / 2;
+			drawPieceImage(boardImage, height, width, board[i][j]);
 		}
 	}
 }
