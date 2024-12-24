@@ -2,7 +2,7 @@
 #include "textFunctions.h"
 using namespace std;
 
-int stringLength(char* text)
+int stringLength(const char* text)
 {
 	if (text == nullptr)
 	{
@@ -16,7 +16,7 @@ int stringLength(char* text)
 	return index;
 }
 
-bool isPrefix(char* prefix, char* text)
+bool isPrefix(const char* prefix, const char* text)
 {
 	if (prefix == nullptr || text == nullptr)
 	{
@@ -33,4 +33,15 @@ bool isPrefix(char* prefix, char* text)
 		text++;
 	}
 	return true;
+}
+
+bool areEqual(const char* text1, const char* text2)
+{
+	if (text1 == nullptr || text2 == nullptr)
+	{
+		cout << "Invalid argument!" << endl;
+		return false;
+	}
+	bool areEqualLengths = stringLength(text1) == stringLength(text2);
+	return isPrefix(text1, text2) && areEqualLengths;
 }

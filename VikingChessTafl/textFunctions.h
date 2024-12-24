@@ -1,4 +1,5 @@
 #define textFunctions
 
-int stringLength(char* text);
-bool isPrefix(char* prefix, char* text);
+int stringLength(const char* text);
+bool isPrefix(const char* prefix, const char* text);
+bool areEqual(const char* text1, const char* text2);

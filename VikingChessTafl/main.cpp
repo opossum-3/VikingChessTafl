@@ -3,6 +3,8 @@
 #include "textFunctions.h"
 using namespace std;
 
+const int BUFFER_SIZE = 50;
+
 void clearConsole() {
 	cout << "\033[;H"; // Moves cursor to the top left
 	cout << "\033[J"; // Clears the console
@@ -10,24 +12,22 @@ void clearConsole() {
 
 int startInput()
 {
-	char input;
-	cin >> input;
-	switch (input)
+	char input[BUFFER_SIZE] = {};
+	cin.getline(input, BUFFER_SIZE);
+	if (areEqual(input, "start"))
 	{
-		case 's':
-			clearConsole();
-			cout << "Game started" << endl;
-			return 1;
-		case 'q':
-			clearConsole();
-			cout << "Game quit" << endl;
-			return 0;
-		default:
-			cout << "Invalid input!" << endl;
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			return -1;
+		clearConsole();
+		cout << "Game started" << endl;
+		return 1;
 	}
-	return 0;
+	if (areEqual(input, "quit"))
+	{
+		clearConsole();
+		cout << "Game quit" << endl;
+		return 0;
+	}
+	cout << "Invalid input!" << endl;
+	return -1;
 }
 
 void startGame()
@@ -43,8 +43,8 @@ int main()
 	cout << endl;
 	while (true)
 	{
-		cout << "Type (s) to start" << endl;
-		cout << "Type (q) to quit" << endl;
+		cout << "Type \"start\" to start a new game" << endl;
+		cout << "Type \"quit\" to exit the game" << endl;
 		cout << endl;
 		int inputResult = startInput();
 		if (inputResult == 1)
