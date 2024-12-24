@@ -4,6 +4,7 @@ using namespace std;
 
 const int CELL_WIDTH = 6;
 const int CELL_HEIGHT = 4;
+const char TO_LETTER = 'A';
 
 void positionDefenders(char** board, int boardSize)
 {
@@ -175,9 +176,31 @@ void printBoard(char** board, int boardSize)
 	int index = 0;
 	while (image[index] != nullptr)
 	{
-		cout << image[index] << endl;
+		cout << image[index];
+		// Draw vertical coordinates
+		if (index % CELL_HEIGHT == CELL_HEIGHT / 2)
+		{
+			cout << "   " << boardSize - (index / CELL_HEIGHT);
+		}
+		cout << endl;
 		index++;
 	}
+	// Draw horizontal coordinates
+	cout << endl;
+	int tableWidth = CELL_WIDTH * boardSize + 1;
+	for (int i = 0; i < tableWidth; i++)
+	{
+		if (i % CELL_WIDTH == CELL_WIDTH / 2)
+		{
+			char output = (i / CELL_WIDTH) + TO_LETTER;
+			cout << output;
+		}
+		else
+		{
+			cout << ' ';
+		}
+	}
+	cout << endl;
 	for (int i = 0; i < boardSize; i++)
 	{
 		delete[boardSize + 1] image[i];
