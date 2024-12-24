@@ -1,5 +1,6 @@
 #include <iostream>
 #include "startBoard.h"
+#include "textFunctions.h"
 using namespace std;
 
 void clearConsole() {
