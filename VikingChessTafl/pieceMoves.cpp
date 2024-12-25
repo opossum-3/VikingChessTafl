@@ -151,6 +151,13 @@ bool isValidMove(char player, char** board, int startRow, int startColumn, int e
 	return true;
 }
 
+void movePiece(char player, char** board, bool isKingFromCenterMove, int startRow, int startColumn, int endRow, int endColumn)
+{
+	char piece = board[startRow][startColumn];
+	board[endRow][endColumn] = piece;
+	board[startRow][startColumn] = isKingFromCenterMove ? 'X' : ' ';
+}
+
 bool tryMove(char player, const char* command, char** board, int boardSize)
 {
 	if (command == nullptr)
@@ -167,7 +174,7 @@ bool tryMove(char player, const char* command, char** board, int boardSize)
 		startRow += ((*command) - TO_DIGIT);
 		command++;
 	}
-	startRow--;
+	startRow = boardSize - startRow;
 	command++;
 	int endColumn = *command - TO_LETTER;
 	command++;
@@ -178,6 +185,16 @@ bool tryMove(char player, const char* command, char** board, int boardSize)
 		endRow += ((*command) - TO_DIGIT);
 		command++;
 	}
-	endRow--;
-	return isValidMove(player, board, startRow, startColumn, endRow, endColumn);
+	endRow = boardSize - endRow;
+	if (!isValidMove(player, board, startRow, startColumn, endRow, endColumn))
+	{
+		return false;
+	}
+	else
+	{
+		bool isKing = (board[startRow][startColumn] == 'K');
+		bool isFromCenter = (startRow == boardSize / 2) && (startColumn == boardSize / 2);
+		movePiece(player, board, (isKing && isFromCenter), startRow, startColumn, endRow, endColumn);
+		return true;
+	}
 }

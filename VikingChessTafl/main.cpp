@@ -51,7 +51,8 @@ bool turn(char player, char** board, int boardSize)
 			cout << "Moving..." << endl;
 			if (tryMove(player, input, board, boardSize))
 			{
-				cout << "Success" << endl;
+				cout << endl;
+				printBoard(board, boardSize);
 				return true;
 			}
 			cout << "Please try again." << endl;
@@ -113,7 +114,6 @@ int main()
 		if (inputResult == 1)
 		{
 			startGame();
-			
 			break;
 		}
 		else if (inputResult == 0)
