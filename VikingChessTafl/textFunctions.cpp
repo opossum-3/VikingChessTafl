@@ -3,10 +3,16 @@
 using namespace std;
 
 const char TO_LOWER = 'a' - 'A';
+const char TO_DIGIT = '0';
 
 bool isDigit(char symbol)
 {
 	return symbol >= '0' && symbol <= '9';
+}
+
+bool isSmall(char symbol)
+{
+	return symbol >= 'a' && symbol <= 'z';
 }
 
 bool isCapital(char symbol)
@@ -92,4 +98,46 @@ int occurrenceCount(const char* text, char symbol)
 		text++;
 	}
 	return count;
+}
+
+int indexOf(const char* text, char symbol)
+{
+	if (text == nullptr)
+	{
+		cout << "Invalid argument!" << endl;
+		return -1;
+	}
+	int index = 0;
+	while (*text != '\0')
+	{
+		if (*text == symbol)
+		{
+			return index;
+		}
+		index++;
+		text++;
+	}
+	return -1;
+}
+
+int parseInt(const char* text)
+{
+	if (text == nullptr)
+	{
+		cout << "Invalid argument!" << endl;
+		return -1;
+	}
+	int result = 0;
+	while (*text != '\0')
+	{
+		if (isDigit(*text) == false)
+		{
+			return -1;
+		}
+		int digit = *text - TO_DIGIT;
+		result *= 10;
+		result += digit;
+		text++;
+	}
+	return result;
 }

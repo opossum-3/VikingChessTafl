@@ -1,3 +1,3 @@
 #define pieceMoves
 
-bool isValidMove(char* command);
+bool isValidMoveFormat(char* command, int boardSize);

@@ -1,13 +1,22 @@
 #include <iostream>
 #include "startBoard.h"
+#include "pieceMoves.h"
 #include "textFunctions.h"
 using namespace std;
 
 const int BUFFER_SIZE = 50;
 
-void clearConsole() {
+void clearConsole()
+{
 	cout << "\033[;H"; // Moves cursor to the top left
 	cout << "\033[J"; // Clears the console
+}
+
+void clearInputBuffer()
+{
+	cin.clear();	// Clears error flags from the cin
+	cin.sync();		// Discards unread characters from the input buffer
+	cin.ignore();	// Discards characters from the input buffer
 }
 
 int startInput()
@@ -30,21 +39,31 @@ int startInput()
 	return -1;
 }
 
-void startGame()
+int startGame()
 {
 	int boardSize = chooseBoardSize();
 	char** board = getBoard(boardSize);
 	printBoard(board, boardSize);
+	return boardSize;
 }
 
-void turn()
+void turn(int boardSize)
 {
-	char input[BUFFER_SIZE];
-	cin.getline(input, BUFFER_SIZE);
-	lower(input);
-	if (isPrefix("start", input))
+	while (true)
 	{
-
+		cout << endl;
+		char input[BUFFER_SIZE] = {};
+		cin.getline(input, BUFFER_SIZE);
+		lower(input);
+		if (isPrefix("move ", input) && isValidMoveFormat(input, boardSize))
+		{
+			cout << "Moving...";
+			break;
+		}
+		else
+		{
+			cout << "Incorrect command. Please try again";
+		}
 	}
 }
 
@@ -60,8 +79,9 @@ int main()
 		int inputResult = startInput();
 		if (inputResult == 1)
 		{
-			startGame();
-			turn();
+			int boardSize = startGame();
+			clearInputBuffer();
+			turn(boardSize);
 			break;
 		}
 		else if (inputResult == 0)
