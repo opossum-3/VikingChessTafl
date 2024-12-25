@@ -39,31 +39,64 @@ int startInput()
 	return -1;
 }
 
-int startGame()
-{
-	int boardSize = chooseBoardSize();
-	char** board = getBoard(boardSize);
-	printBoard(board, boardSize);
-	return boardSize;
-}
-
-void turn(int boardSize)
+bool turn(char player, char** board, int boardSize)
 {
 	while (true)
 	{
-		cout << endl;
 		char input[BUFFER_SIZE] = {};
 		cin.getline(input, BUFFER_SIZE);
 		lower(input);
 		if (isPrefix("move ", input) && isValidMoveFormat(input, boardSize))
 		{
-			cout << "Moving...";
-			break;
+			cout << "Moving..." << endl;
+			if (tryMove(player, input, board, boardSize))
+			{
+				cout << "Success" << endl;
+				return true;
+			}
+			cout << "Please try again." << endl;
+		}
+		else if (areEqual("quit", input))
+		{
+			return false;
 		}
 		else
 		{
-			cout << "Incorrect command. Please try again";
+			cout << "Incorrect command. Please try again." << endl;
 		}
+	}
+}
+
+void startGame()
+{
+	int boardSize = chooseBoardSize();
+	char** board = getBoard(boardSize);
+	printBoard(board, boardSize);
+	clearInputBuffer();
+	char player = 'A';
+	while (true)
+	{
+		if (player == 'A')
+		{
+			cout << "Attacker's turn:" << endl;
+			if (!turn(player, board, boardSize))
+			{
+				// Player quit
+				break;
+			}
+			player = 'D';
+		}
+		else if (player == 'D')
+		{
+			cout << "Defender's turn:" << endl;
+			if (!turn(player, board, boardSize))
+			{
+				// Player quit
+				break;
+			}
+			player = 'A';
+		}
+
 	}
 }
 
@@ -79,9 +112,8 @@ int main()
 		int inputResult = startInput();
 		if (inputResult == 1)
 		{
-			int boardSize = startGame();
-			clearInputBuffer();
-			turn(boardSize);
+			startGame();
+			
 			break;
 		}
 		else if (inputResult == 0)
