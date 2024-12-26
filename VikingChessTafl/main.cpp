@@ -62,6 +62,14 @@ bool turn(char player, char** board, int boardSize)
 			cout << "Game quit" << endl;
 			return false;
 		}
+		else if (areEqual("help", input))
+		{
+			cout << "Possible commands:" << endl;
+			cout << "To move a piece, type: move <coords from> <coords to> (example: Move a2 a3)" << endl;
+			cout << "To undo a move, type: back" << endl;
+			cout << "To see game info, type: info" << endl;
+			cout << "To quit the game, type: quit" << endl;
+		}
 		else
 		{
 			cout << "Incorrect command. Please try again." << endl;
