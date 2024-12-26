@@ -70,7 +70,17 @@ bool isValidMoveFormat(const char* command, int boardSize)
 	return isValidFirst && isValidSecond;
 }
 
-bool isWrongPlayerPiece(char player, char piece)
+bool isPiece(char square)
+{
+	return square == 'A' || square == 'D' || square == 'K';
+}
+
+bool isPlayerPiece(char player, char piece)
+{
+	return (player == piece) || (player == 'D' && piece == 'K');
+}
+
+bool isOtherPlayerPiece(char player, char piece)
 {
 	return (player == 'A' && piece != 'A') || (player == 'D' && piece != 'D' && piece != 'K');
 }
@@ -123,7 +133,7 @@ bool isValidMove(char player, char** board, int startRow, int startColumn, int e
 {
 	char startCell = board[startRow][startColumn];
 	char endCell = board[endRow][endColumn];
-	if (isWrongPlayerPiece(player, startCell))
+	if (isOtherPlayerPiece(player, startCell))
 	{
 		cout << "You can't move other player's pieces or empty squares." << endl;
 		return false;
@@ -151,11 +161,52 @@ bool isValidMove(char player, char** board, int startRow, int startColumn, int e
 	return true;
 }
 
-void movePiece(char player, char** board, bool isKingFromCenterMove, int startRow, int startColumn, int endRow, int endColumn)
+void movePiece(char** board, bool isKingFromCenterMove, int startRow, int startColumn, int endRow, int endColumn)
 {
 	char piece = board[startRow][startColumn];
 	board[endRow][endColumn] = piece;
 	board[startRow][startColumn] = isKingFromCenterMove ? 'X' : ' ';
+}
+
+void takePiece(char** board, int row, int column)
+{
+	char piece = board[row][column];
+	if (piece != 'K')
+	{
+		board[row][column] = ' ';
+	}
+}
+
+bool doesSquareExist(int row, int column, int boardSize)
+{
+	return row >= 0 && row < boardSize && column >= 0 && column < boardSize;
+}
+
+void analyzeForTakenAt(char player, char** board, int boardSize, int row, int column, int vertDir, int horDir)
+{
+	bool squareExists = doesSquareExist(row + vertDir, column + horDir, boardSize);
+	if (!(squareExists && isPiece(board[row + vertDir][column + horDir])))
+	{
+		return;
+	}
+	bool isEnemyPiece = isOtherPlayerPiece(player, board[row + vertDir][column + horDir]);
+	if (isEnemyPiece)
+	{
+		bool atEdge = !(doesSquareExist(row + 2 * vertDir, column + 2 * horDir, boardSize));
+		bool samePlayerPiece = !(atEdge) && isPlayerPiece(player, board[row + 2 * vertDir][column + 2 * horDir]);
+		if (board[row + vertDir][column + horDir] != 'K' && (atEdge || samePlayerPiece))
+		{
+			takePiece(board, row + vertDir, column + horDir);
+		}
+	}
+}
+
+void analyzeForTakenPieces(char player, char** board, int boardSize, int endRow, int endColumn)
+{
+	analyzeForTakenAt(player, board, boardSize, endRow, endColumn, -1, 0);
+	analyzeForTakenAt(player, board, boardSize, endRow, endColumn, 0, -1);
+	analyzeForTakenAt(player, board, boardSize, endRow, endColumn, 1, 0);
+	analyzeForTakenAt(player, board, boardSize, endRow, endColumn, 0, 1);
 }
 
 bool tryMove(char player, const char* command, char** board, int boardSize)
@@ -186,15 +237,16 @@ bool tryMove(char player, const char* command, char** board, int boardSize)
 		command++;
 	}
 	endRow = boardSize - endRow;
-	if (!isValidMove(player, board, startRow, startColumn, endRow, endColumn))
-	{
-		return false;
-	}
-	else
+	if (isValidMove(player, board, startRow, startColumn, endRow, endColumn))
 	{
 		bool isKing = (board[startRow][startColumn] == 'K');
 		bool isFromCenter = (startRow == boardSize / 2) && (startColumn == boardSize / 2);
-		movePiece(player, board, (isKing && isFromCenter), startRow, startColumn, endRow, endColumn);
+		movePiece(board, (isKing && isFromCenter), startRow, startColumn, endRow, endColumn);
+		analyzeForTakenPieces(player, board, boardSize, endRow, endColumn);
 		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
