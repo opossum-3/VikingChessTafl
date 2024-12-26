@@ -176,10 +176,8 @@ void movePiece(char** board, bool isKingFromCenterMove, int startRow, int startC
 void takePiece(char** board, int row, int column)
 {
 	char piece = board[row][column];
-	if (piece != 'K')
-	{
-		board[row][column] = ' ';
-	}
+	board[row][column] = ' ';
+	cout << ((piece == 'A') ? "An attacker's " : "A defender's ") << "piece has been captured." << endl;
 }
 
 bool isNullOrAttacker(char** board, int row, int column, int boardSize)
@@ -241,11 +239,15 @@ void analyzeForTakenAt(char player, char** board, int boardSize, int row, int co
 		return;
 	}
 	bool isEnemyPiece = isOtherPlayerPiece(player, board[row + vertDir][column + horDir]);
-	if (isEnemyPiece)
+	if (isEnemyPiece && board[row + vertDir][column + horDir] != 'K')
 	{
-		bool atEdge = !(doesSquareExist(row + 2 * vertDir, column + 2 * horDir, boardSize));
-		bool samePlayerPiece = !(atEdge) && isPlayerPiece(player, board[row + 2 * vertDir][column + 2 * horDir]);
-		if (board[row + vertDir][column + horDir] != 'K' && (atEdge || samePlayerPiece))
+		if (!doesSquareExist(row + 2 * vertDir, column + 2 * horDir, boardSize))
+		{
+			return;
+		}
+		bool isX = board[row + 2 * vertDir][column + 2 * horDir] == 'X';
+		bool samePlayerPiece = isPlayerPiece(player, board[row + 2 * vertDir][column + 2 * horDir]);
+		if (board[row + vertDir][column + horDir] != 'K' && (isX || samePlayerPiece))
 		{
 			takePiece(board, row + vertDir, column + horDir);
 		}
