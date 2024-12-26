@@ -70,6 +70,11 @@ bool isValidMoveFormat(const char* command, int boardSize)
 	return isValidFirst && isValidSecond;
 }
 
+bool doesSquareExist(int row, int column, int boardSize)
+{
+	return row >= 0 && row < boardSize && column >= 0 && column < boardSize;
+}
+
 bool isPiece(char square)
 {
 	return square == 'A' || square == 'D' || square == 'K';
@@ -177,9 +182,55 @@ void takePiece(char** board, int row, int column)
 	}
 }
 
-bool doesSquareExist(int row, int column, int boardSize)
+bool isNullOrAttacker(char** board, int row, int column, int boardSize)
 {
-	return row >= 0 && row < boardSize && column >= 0 && column < boardSize;
+	if (!doesSquareExist(row, column, boardSize))
+	{
+		return true;
+	}
+	return board[row][column] == 'A';
+}
+
+bool isKingSurrounded(char** board, int boardSize)
+{
+	int kingRow = 0, kingColumn = 0;
+	for (int i = 0; i < boardSize; i++)
+	{
+		for (int j = 0; j < boardSize; j++)
+		{
+			if (board[i][j] == 'K')
+			{
+				kingRow = i;
+				kingColumn = j;
+				break;
+			}
+		}
+	}
+	int adjPieces = 0;
+	if (isNullOrAttacker(board, kingRow - 1, kingColumn, boardSize))
+	{
+		adjPieces++;
+	}
+	if (isNullOrAttacker(board, kingRow + 1, kingColumn, boardSize))
+	{
+		adjPieces++;
+	}
+	if (isNullOrAttacker(board, kingRow, kingColumn - 1, boardSize))
+	{
+		adjPieces++;
+	}
+	if (isNullOrAttacker(board, kingRow, kingColumn + 1, boardSize))
+	{
+		adjPieces++;
+	}
+	return adjPieces == 4;
+}
+
+bool hasKingEscaped(char** board, int boardSize)
+{
+	bool isLeftCorners = board[0][0] == 'K' || board[boardSize - 1][0] == 'K';
+	bool isRightCorners = board[0][boardSize - 1] == 'K' || board[boardSize - 1][boardSize - 1] == 'K';
+	return isLeftCorners || isRightCorners;
 }
 
 void analyzeForTakenAt(char player, char** board, int boardSize, int row, int column, int vertDir, int horDir)

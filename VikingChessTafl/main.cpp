@@ -59,6 +59,7 @@ bool turn(char player, char** board, int boardSize)
 		}
 		else if (areEqual("quit", input))
 		{
+			cout << "Game quit" << endl;
 			return false;
 		}
 		else
@@ -66,6 +67,21 @@ bool turn(char player, char** board, int boardSize)
 			cout << "Incorrect command. Please try again." << endl;
 		}
 	}
+}
+
+bool isGameOver(char** board, int boardSize)
+{
+	if (isKingSurrounded(board, boardSize))
+	{
+		cout << "The king is surrounded. Attackers win!" << endl;
+		return true;
+	}
+	if (hasKingEscaped(board, boardSize))
+	{
+		cout << "The king has escaped. Defenders win!" << endl;
+		return true;
+	}
+	return false;
 }
 
 void startGame()
@@ -97,7 +113,11 @@ void startGame()
 			}
 			player = 'A';
 		}
-
+		if (isGameOver(board, boardSize))
+		{
+			cout << "Game over." << endl;
+			break;
+		}
 	}
 }
 
