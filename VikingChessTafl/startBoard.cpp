@@ -203,9 +203,9 @@ void printBoard(char** board, int boardSize)
 	cout << endl;
 	for (int i = 0; i < boardSize; i++)
 	{
-		delete[boardSize + 1] image[i];
+		delete[] image[i];
 	}
-	delete[boardSize + 1] image;
+	delete[] image;
 }
 
 int chooseBoardSize()

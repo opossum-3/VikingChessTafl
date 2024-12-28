@@ -47,7 +47,7 @@ struct boardState
 	boardState* next;
 };
 
-void recordMove(boardState** lastMove, int moveCoords[4])
+void recordMove(boardState** state, int moveCoords[4])
 {
 	boardState* newMove = new boardState();
 	newMove->startRow = moveCoords[0];
@@ -55,23 +55,24 @@ void recordMove(boardState** lastMove, int moveCoords[4])
 	newMove->endRow = moveCoords[2];
 	newMove->endColumn = moveCoords[3];
 	newMove->next = nullptr;
-	if (*lastMove == nullptr)
+	if (*state == nullptr)
 	{
-		*lastMove = newMove;
+		*state = newMove;
 	}
 	else
 	{
-		newMove->previous = *lastMove;
-		(*lastMove)->next = newMove;
+		boardState* copy = *state;
+		while (copy->next != nullptr)
+		{
+			copy = copy->next;
+		}
+		newMove->previous = copy;
+		copy->next = newMove;
 	}
 }
 
-bool undoMove(char** board, int boardSize, boardState** state)
+char** undoMove(char** board, int boardSize, boardState** state)
 {
-	if (*state == nullptr)
-	{
-		return false;
-	}
 	for (int i = 0; i < boardSize; i++)
 	{
 		delete[] board[i];
@@ -85,25 +86,35 @@ bool undoMove(char** board, int boardSize, boardState** state)
 		turnIndex++;
 		copy = copy->next;
 	}
+	copy = *state;
 	for (int i = 0; i < turnIndex; i++)
 	{
-		int startRow = (*state)->startRow;
-		int startColumn = (*state)->startColumn;
-		int endRow = (*state)->endRow;
-		int endColumn = (*state)->endColumn;
+		int startRow = copy->startRow;
+		int startColumn = copy->startColumn;
+		int endRow = copy->endRow;
+		int endColumn = copy->endColumn;
 		char player = (i % 2 == 0) ? 'A' : 'D';
 		bool isKing = (board[startRow][startColumn] == 'K');
 		bool isFromCenter = (startRow == boardSize / 2) && (startColumn == boardSize / 2);
 		movePiece(board, (isKing && isFromCenter), startRow, startColumn, endRow, endColumn);
 		analyzeForTakenPieces(player, board, boardSize, endRow, endColumn, false);
-		*state = (*state)->next;
+		copy = copy->next;
 	}
-	delete[] *state;
-	*state = nullptr;
-	return true;
+	if (copy->previous != nullptr)
+	{
+		copy->previous->next = nullptr;
+		delete copy;
+		copy = nullptr;
+	}
+	else
+	{
+		delete* state;
+		*state = nullptr;
+	}
+	return board;
 }
 
-bool turn(char player, char** board, int boardSize, boardState** state)
+char** turn(char player, char** board, int boardSize, boardState** state, bool& hasMoved)
 {
 	while (true)
 	{
@@ -119,36 +130,31 @@ bool turn(char player, char** board, int boardSize, boardState** state)
 				recordMove(state, moveCoords);
 				cout << endl;
 				printBoard(board, boardSize);
-				return true;
+				hasMoved = true;
+				return board;
 			}
 			cout << "Please try again." << endl;
 		}
 		else if (areEqual("quit", input))
 		{
 			cout << "Game quit" << endl;
-			return false;
+			hasMoved = false;
+			return board;
 		}
 		else if (areEqual("back", input))
 		{
-			if (undoMove(board, boardSize, state))
-			{
-				cout << endl;
-				printBoard(board, boardSize);
-				if (player == 'A')
-				{
-					player = 'D';
-				}
-				else
-				{
-					player = 'A';
-				}
-				return true;
-			}
-			else
+			if (*state == nullptr)
 			{
 				cout << "You can't undo moves at initial position." << endl;
 			}
-			//cout << endl << ((player == 'A') ? "Attacker's" : "Defender's") << " turn:" << endl;
+			else
+			{
+				board = undoMove(board, boardSize, state);
+				printBoard(board, boardSize);
+				player = (player == 'A') ? 'D' : 'A';
+				hasMoved = true;
+				return board;
+			}
 		}
 		else if (areEqual("help", input))
 		{
@@ -191,10 +197,13 @@ void startGame()
 	char player = 'A';
 	while (true)
 	{
+		bool hasMoved = false;
+		bool& hasMovedRef = hasMoved;
 		if (player == 'A')
 		{
 			cout << "Attacker's turn:" << endl;
-			if (!turn(player, board, boardSize, initialState))
+			board = turn(player, board, boardSize, initialState, hasMovedRef);
+			if (!hasMovedRef)
 			{
 				// Player quit
 				break;
@@ -204,7 +213,8 @@ void startGame()
 		else if (player == 'D')
 		{
 			cout << "Defender's turn:" << endl;
-			if (!turn(player, board, boardSize, initialState))
+			board = turn(player, board, boardSize, initialState, hasMovedRef);
+			if (!hasMovedRef)
 			{
 				// Player quit
 				break;
