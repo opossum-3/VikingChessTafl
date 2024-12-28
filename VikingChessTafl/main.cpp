@@ -39,6 +39,54 @@ int startInput()
 	return -1;
 }
 
+int attackerPieceCount(char** board, int boardSize)
+{
+	int count = 0;
+	for (int i = 0; i < boardSize; i++)
+	{
+		for (int j = 0; j < boardSize; j++)
+		{
+			if (board[i][j] == 'A')
+			{
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+int defenderPieceCount(char** board, int boardSize)
+{
+	int count = 0;
+	for (int i = 0; i < boardSize; i++)
+	{
+		for (int j = 0; j < boardSize; j++)
+		{
+			if (board[i][j] == 'D' || board[i][j] == 'K')
+			{
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+int attackersAtStart(int boardSize)
+{
+	switch (boardSize)
+	{
+		case 9:
+			return 16;
+		case 11:
+			return 24;
+		case 13:
+			return 32;
+		default:
+			break;
+	}
+	return -1;
+}
+
 struct boardState
 {
 	int startRow, startColumn;
@@ -46,6 +94,22 @@ struct boardState
 	boardState* previous;
 	boardState* next;
 };
+
+int moveCount(boardState** state)
+{
+	boardState* current = *state;
+	if (current == nullptr)
+	{
+		return 0;
+	}
+	int count = 1;
+	while (current->next != nullptr)
+	{
+		current = current->next;
+		count++;
+	}
+	return count;
+}
 
 void recordMove(boardState** state, int moveCoords[4])
 {
@@ -154,6 +218,28 @@ char** turn(char player, char** board, int boardSize, boardState** state, bool& 
 				player = (player == 'A') ? 'D' : 'A';
 				hasMoved = true;
 				return board;
+			}
+		}
+		else if (areEqual("info", input))
+		{
+			int initialAttackers = attackersAtStart(boardSize);
+			int initialDefenders = initialAttackers / 2 + 1;
+			int attackers = attackerPieceCount(board, boardSize);
+			int defenders = defenderPieceCount(board, boardSize);
+			cout << "There are " << attackers << " attackers on the board." << endl;
+			cout << "There are " << defenders << " defenders on the board";
+			cout << " (including the king)." << endl;
+			cout << "A total of " << initialAttackers - attackers << " attackers have been taken." << endl;
+			cout << "A total of " << initialDefenders - defenders << " defenders have been taken." << endl;
+			int moves = moveCount(state);
+			if (moves == 0)
+			{
+				cout << "No moves have been made yet." << endl;
+			}
+			else
+			{
+				cout << "Attackers have made " << moves / 2 + (moves % 2) << " moves." << endl;
+				cout << "Defenders have made " << moves / 2 << " moves." << endl;
 			}
 		}
 		else if (areEqual("help", input))
