@@ -1,10 +1,7 @@
 #include <iostream>
 #include "startBoard.h"
+#include "constants.h"
 using namespace std;
-
-const int CELL_WIDTH = 6;
-const int CELL_HEIGHT = 4;
-const char TO_LETTER = 'A';
 
 void positionDefenders(char** board, int boardSize)
 {
@@ -34,13 +31,13 @@ void positionAttackers(char** board, int boardSize)
 	int padding = 1;
 	switch (boardSize)
 	{
-		case 9:
+		case SMALL_BOARD_SIZE:
 			padding = 1;
 			break;
-		case 11:
+		case MEDIUM_BOARD_SIZE:
 			padding = 2;
 			break;
-		case 13:
+		case LARGE_BOARD_SIZE:
 			padding = 3;
 			break;
 		default:
@@ -220,7 +217,7 @@ int chooseBoardSize()
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
-		if (boardSize == 9  || boardSize == 11 || boardSize == 13)
+		if (boardSize == SMALL_BOARD_SIZE  || boardSize == MEDIUM_BOARD_SIZE || boardSize == LARGE_BOARD_SIZE)
 		{
 			cout << "Board size " << boardSize << "x" << boardSize << " chosen" << endl;
 			break;

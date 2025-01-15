@@ -2,9 +2,8 @@
 #include "startBoard.h"
 #include "pieceMoves.h"
 #include "textFunctions.h"
+#include "constants.h"
 using namespace std;
-
-const int BUFFER_SIZE = 50;
 
 void clearConsole()
 {
@@ -75,12 +74,12 @@ int attackersAtStart(int boardSize)
 {
 	switch (boardSize)
 	{
-		case 9:
-			return 16;
-		case 11:
-			return 24;
-		case 13:
-			return 32;
+		case SMALL_BOARD_SIZE:
+			return SMALL_BOARD_PIECE_COUNT;
+		case MEDIUM_BOARD_SIZE:
+			return MEDIUM_BOARD_PIECE_COUNT;
+		case LARGE_BOARD_SIZE:
+			return LARGE_BOARD_PIECE_COUNT;
 		default:
 			break;
 	}

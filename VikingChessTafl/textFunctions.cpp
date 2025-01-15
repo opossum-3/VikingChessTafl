@@ -1,9 +1,7 @@
 #include <iostream>
 #include "textFunctions.h"
+#include "constants.h"
 using namespace std;
-
-const char TO_LOWER = 'a' - 'A';
-const char TO_DIGIT = '0';
 
 bool isDigit(char symbol)
 {

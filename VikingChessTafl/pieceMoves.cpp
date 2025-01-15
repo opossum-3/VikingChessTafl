@@ -1,15 +1,12 @@
 #include <iostream>
 #include "pieceMoves.h"
 #include "textFunctions.h"
+#include "constants.h"
 using namespace std;
-
-const int MOVE_COMMAND_LENGTH = 10;
-const char TO_LETTER = 'a';
-const char TO_DIGIT = '0';
 
 bool isValidHorCoord(char coord, int boardSize)
 {
-	return coord >= TO_LETTER && coord <= boardSize + TO_LETTER - 1;
+	return coord >= TO_SMALL_LETTER && coord <= boardSize + TO_SMALL_LETTER - 1;
 }
 
 bool isValidVertCoord(int coord, int boardSize)
@@ -272,7 +269,7 @@ bool tryMove(char player, const char* command, char** board, int boardSize, int 
 		return false;
 	}
 	command += stringLength("move ");
-	int startColumn = *command - TO_LETTER;
+	int startColumn = *command - TO_SMALL_LETTER;
 	command++;
 	int startRow = 0;
 	while (isDigit(*command))
@@ -283,7 +280,7 @@ bool tryMove(char player, const char* command, char** board, int boardSize, int 
 	}
 	startRow = boardSize - startRow;
 	command++;
-	int endColumn = *command - TO_LETTER;
+	int endColumn = *command - TO_SMALL_LETTER;
 	command++;
 	int endRow = 0;
 	while (isDigit(*command))
