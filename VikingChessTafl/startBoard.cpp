@@ -6,7 +6,7 @@ using namespace std;
 void positionDefenders(char** board, int boardSize)
 {
 	int center = boardSize / 2;
-	int padding = boardSize == LARGE_BOARD_SIZE ? 3 : 2;
+	int padding = boardSize == LARGE_BOARD_SIZE ? LARGE_PADDING : MEDIUM_PADDING;
 	for (int i = -padding; i <= padding; i++)
 	{
 		if (i == 0)
@@ -16,7 +16,7 @@ void positionDefenders(char** board, int boardSize)
 		board[center][center + i] = 'D';
 		board[center + i][center] = 'D';
 	}
-	if (boardSize > 9) 
+	if (boardSize > SMALL_BOARD_SIZE) 
 	{
 		board[center - 1][center - 1] = 'D';
 		board[center - 1][center + 1] = 'D';
@@ -32,13 +32,13 @@ void positionAttackers(char** board, int boardSize)
 	switch (boardSize)
 	{
 		case SMALL_BOARD_SIZE:
-			padding = 1;
+			padding = SMALL_PADDING;
 			break;
 		case MEDIUM_BOARD_SIZE:
-			padding = 2;
+			padding = MEDIUM_PADDING;
 			break;
 		case LARGE_BOARD_SIZE:
-			padding = 3;
+			padding = LARGE_PADDING;
 			break;
 		default:
 			break;
@@ -221,7 +221,7 @@ int chooseBoardSize()
 			cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		}
-		if (boardSize == SMALL_BOARD_SIZE  || boardSize == MEDIUM_BOARD_SIZE || boardSize == LARGE_BOARD_SIZE)
+		if (boardSize == SMALL_BOARD_SIZE || boardSize == MEDIUM_BOARD_SIZE || boardSize == LARGE_BOARD_SIZE)
 		{
 			cout << "Board size " << boardSize << "x" << boardSize << " chosen" << endl;
 			break;

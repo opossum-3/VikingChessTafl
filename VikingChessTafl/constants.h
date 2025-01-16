@@ -2,12 +2,15 @@
 
 const int SMALL_BOARD_SIZE = 9;
 const int SMALL_BOARD_PIECE_COUNT = 16;
+const int SMALL_PADDING = 1;
 
 const int MEDIUM_BOARD_SIZE = 11;
 const int MEDIUM_BOARD_PIECE_COUNT = 24;
+const int MEDIUM_PADDING = 2;
 
 const int LARGE_BOARD_SIZE = 13;
 const int LARGE_BOARD_PIECE_COUNT = 32;
+const int LARGE_PADDING = 3;
 
 const int CELL_WIDTH = 6;
 const int CELL_HEIGHT = 4;
