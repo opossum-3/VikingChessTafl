@@ -79,25 +79,6 @@ void lower(char* text)
 	}
 }
 
-int occurrenceCount(const char* text, char symbol)
-{
-	if (text == nullptr)
-	{
-		cout << "Invalid argument!" << endl;
-		return -1;
-	}
-	int count = 0;
-	while (*text != '\0')
-	{
-		if (*text == symbol)
-		{
-			count++;
-		}
-		text++;
-	}
-	return count;
-}
-
 int indexOf(const char* text, char symbol)
 {
 	if (text == nullptr)
@@ -116,26 +97,4 @@ int indexOf(const char* text, char symbol)
 		text++;
 	}
 	return -1;
-}
-
-int parseInt(const char* text)
-{
-	if (text == nullptr)
-	{
-		cout << "Invalid argument!" << endl;
-		return -1;
-	}
-	int result = 0;
-	while (*text != '\0')
-	{
-		if (isDigit(*text) == false)
-		{
-			return -1;
-		}
-		int digit = *text - TO_DIGIT;
-		result *= 10;
-		result += digit;
-		text++;
-	}
-	return result;
 }

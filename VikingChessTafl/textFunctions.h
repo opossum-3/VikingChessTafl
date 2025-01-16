@@ -7,4 +7,3 @@ void lower(char* text);
 bool isDigit(char symbol);
 bool isSmall(char symbol);
 int indexOf(const char* text, char symbol);
-int parseInt(const char* text);
