@@ -3,6 +3,8 @@
 #include "pieceMoves.h"
 #include "textFunctions.h"
 #include "constants.h"
+#include "gameInfo.h"
+#include "main.h"
 using namespace std;
 
 void clearConsole()
@@ -38,54 +40,6 @@ int startInput()
 	return -1;
 }
 
-int attackerPieceCount(char** board, int boardSize)
-{
-	int count = 0;
-	for (int i = 0; i < boardSize; i++)
-	{
-		for (int j = 0; j < boardSize; j++)
-		{
-			if (board[i][j] == 'A')
-			{
-				count++;
-			}
-		}
-	}
-	return count;
-}
-
-int defenderPieceCount(char** board, int boardSize)
-{
-	int count = 0;
-	for (int i = 0; i < boardSize; i++)
-	{
-		for (int j = 0; j < boardSize; j++)
-		{
-			if (board[i][j] == 'D' || board[i][j] == 'K')
-			{
-				count++;
-			}
-		}
-	}
-	return count;
-}
-
-int attackersAtStart(int boardSize)
-{
-	switch (boardSize)
-	{
-		case SMALL_BOARD_SIZE:
-			return SMALL_BOARD_PIECE_COUNT;
-		case MEDIUM_BOARD_SIZE:
-			return MEDIUM_BOARD_PIECE_COUNT;
-		case LARGE_BOARD_SIZE:
-			return LARGE_BOARD_PIECE_COUNT;
-		default:
-			break;
-	}
-	return -1;
-}
-
 struct moveInfo
 {
 	int startRow, startColumn;
@@ -93,6 +47,15 @@ struct moveInfo
 	moveInfo* previous;
 	moveInfo* next;
 };
+
+void deleteBoard(int boardSize, char** board)
+{
+	for (int i = 0; i < boardSize; i++)
+	{
+		delete[] board[i];
+	}
+	delete[] board;
+}
 
 int moveCount(moveInfo** moveState)
 {
@@ -136,11 +99,7 @@ void recordMove(moveInfo** move, int moveCoords[4])
 
 char** undoMove(char** board, int boardSize, moveInfo** move)
 {
-	for (int i = 0; i < boardSize; i++)
-	{
-		delete[] board[i];
-	}
-	delete[] board;
+	deleteBoard(boardSize, board);
 	board = getBoard(boardSize);
 	moveInfo* moveValue = *move;
 	int turnIndex = 0;
@@ -175,6 +134,38 @@ char** undoMove(char** board, int boardSize, moveInfo** move)
 		*move = nullptr;
 	}
 	return board;
+}
+
+void deleteMoveInfo(moveInfo** moves)
+{
+	if (moves == nullptr || *moves == nullptr)
+	{
+		return;
+	}
+	moveInfo* current = *moves;
+	moveInfo* next = current->next;
+	while (next != nullptr)
+	{
+		next = current->next;
+		delete current;
+	}
+	delete current;
+	delete moves;
+}
+
+void printInfo(int boardSize, char** board, moveInfo** state)
+{
+	printPieceInfo(boardSize, board);
+	int moves = moveCount(state);
+	if (moves == 0)
+	{
+		cout << "No moves have been made yet." << endl;
+	}
+	else
+	{
+		cout << "Attackers have made " << moves / 2 + (moves % 2) << " moves." << endl;
+		cout << "Defenders have made " << moves / 2 << " moves." << endl;
+	}
 }
 
 char** turn(char player, char** board, int boardSize, moveInfo** state, bool& hasMoved)
@@ -221,54 +212,17 @@ char** turn(char player, char** board, int boardSize, moveInfo** state, bool& ha
 		}
 		else if (areEqual("info", input))
 		{
-			int initialAttackers = attackersAtStart(boardSize);
-			int initialDefenders = initialAttackers / 2 + 1;
-			int attackers = attackerPieceCount(board, boardSize);
-			int defenders = defenderPieceCount(board, boardSize);
-			cout << "There are " << attackers << " attackers on the board." << endl;
-			cout << "There are " << defenders << " defenders on the board";
-			cout << " (including the king)." << endl;
-			cout << "A total of " << initialAttackers - attackers << " attackers have been taken." << endl;
-			cout << "A total of " << initialDefenders - defenders << " defenders have been taken." << endl;
-			int moves = moveCount(state);
-			if (moves == 0)
-			{
-				cout << "No moves have been made yet." << endl;
-			}
-			else
-			{
-				cout << "Attackers have made " << moves / 2 + (moves % 2) << " moves." << endl;
-				cout << "Defenders have made " << moves / 2 << " moves." << endl;
-			}
+			printInfo(boardSize, board, state);
 		}
 		else if (areEqual("help", input))
 		{
-			cout << "Possible commands:" << endl;
-			cout << "To move a piece, type: move <coords from> <coords to> (example: Move a2 a3)" << endl;
-			cout << "To undo a move, type: back" << endl;
-			cout << "To see game info, type: info" << endl;
-			cout << "To quit the game, type: quit" << endl;
+			printHelp();
 		}
 		else
 		{
 			cout << "Incorrect command. Please try again." << endl;
 		}
 	}
-}
-
-bool isGameOver(char** board, int boardSize)
-{
-	if (isKingSurrounded(board, boardSize))
-	{
-		cout << "The king is surrounded. Attackers win!" << endl;
-		return true;
-	}
-	if (hasKingEscaped(board, boardSize))
-	{
-		cout << "The king has escaped. Defenders win!" << endl;
-		return true;
-	}
-	return false;
 }
 
 void startGame()
@@ -284,30 +238,20 @@ void startGame()
 	{
 		bool hasMoved = false;
 		bool& hasMovedRef = hasMoved;
-		if (player == 'A')
+		cout << ((player == 'A') ? "Attacker's turn:" : "Defender's turn:") << endl;
+		board = turn(player, board, boardSize, initialState, hasMovedRef);
+		if (!hasMovedRef)
 		{
-			cout << "Attacker's turn:" << endl;
-			board = turn(player, board, boardSize, initialState, hasMovedRef);
-			if (!hasMovedRef)
-			{
-				// Player quit
-				break;
-			}
-			player = 'D';
+			// Player quit
+			deleteBoard(boardSize, board);
+			deleteMoveInfo(initialState);
+			break;
 		}
-		else if (player == 'D')
-		{
-			cout << "Defender's turn:" << endl;
-			board = turn(player, board, boardSize, initialState, hasMovedRef);
-			if (!hasMovedRef)
-			{
-				// Player quit
-				break;
-			}
-			player = 'A';
-		}
+		player = (player == 'A') ? 'D' : 'A';
 		if (isGameOver(board, boardSize))
 		{
+			deleteBoard(boardSize, board);
+			deleteMoveInfo(initialState);
 			cout << "Game over." << endl;
 			break;
 		}
