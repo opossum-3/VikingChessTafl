@@ -86,17 +86,17 @@ int attackersAtStart(int boardSize)
 	return -1;
 }
 
-struct boardState
+struct moveInfo
 {
 	int startRow, startColumn;
 	int endRow, endColumn;
-	boardState* previous;
-	boardState* next;
+	moveInfo* previous;
+	moveInfo* next;
 };
 
-int moveCount(boardState** state)
+int moveCount(moveInfo** moveState)
 {
-	boardState* current = *state;
+	moveInfo* current = *moveState;
 	if (current == nullptr)
 	{
 		return 0;
@@ -110,31 +110,31 @@ int moveCount(boardState** state)
 	return count;
 }
 
-void recordMove(boardState** state, int moveCoords[4])
+void recordMove(moveInfo** move, int moveCoords[4])
 {
-	boardState* newMove = new boardState();
+	moveInfo* newMove = new moveInfo();
 	newMove->startRow = moveCoords[0];
 	newMove->startColumn = moveCoords[1];
 	newMove->endRow = moveCoords[2];
 	newMove->endColumn = moveCoords[3];
 	newMove->next = nullptr;
-	if (*state == nullptr)
+	if (*move == nullptr)
 	{
-		*state = newMove;
+		*move = newMove;
 	}
 	else
 	{
-		boardState* copy = *state;
-		while (copy->next != nullptr)
+		moveInfo* moveValue = *move;
+		while (moveValue->next != nullptr)
 		{
-			copy = copy->next;
+			moveValue = moveValue->next;
 		}
-		newMove->previous = copy;
-		copy->next = newMove;
+		newMove->previous = moveValue;
+		moveValue->next = newMove;
 	}
 }
 
-char** undoMove(char** board, int boardSize, boardState** state)
+char** undoMove(char** board, int boardSize, moveInfo** move)
 {
 	for (int i = 0; i < boardSize; i++)
 	{
@@ -142,42 +142,42 @@ char** undoMove(char** board, int boardSize, boardState** state)
 	}
 	delete[] board;
 	board = getBoard(boardSize);
-	boardState* copy = *state;
+	moveInfo* moveValue = *move;
 	int turnIndex = 0;
-	while (copy->next != nullptr)
+	while (moveValue->next != nullptr)
 	{
 		turnIndex++;
-		copy = copy->next;
+		moveValue = moveValue->next;
 	}
-	copy = *state;
+	moveValue = *move;
 	for (int i = 0; i < turnIndex; i++)
 	{
-		int startRow = copy->startRow;
-		int startColumn = copy->startColumn;
-		int endRow = copy->endRow;
-		int endColumn = copy->endColumn;
+		int startRow = moveValue->startRow;
+		int startColumn = moveValue->startColumn;
+		int endRow = moveValue->endRow;
+		int endColumn = moveValue->endColumn;
 		char player = (i % 2 == 0) ? 'A' : 'D';
 		bool isKing = (board[startRow][startColumn] == 'K');
 		bool isFromCenter = (startRow == boardSize / 2) && (startColumn == boardSize / 2);
 		movePiece(board, (isKing && isFromCenter), startRow, startColumn, endRow, endColumn);
 		analyzeForTakenPieces(player, board, boardSize, endRow, endColumn, false);
-		copy = copy->next;
+		moveValue = moveValue->next;
 	}
-	if (copy->previous != nullptr)
+	if (moveValue->previous != nullptr)
 	{
-		copy->previous->next = nullptr;
-		delete copy;
-		copy = nullptr;
+		moveValue->previous->next = nullptr;
+		delete moveValue;
+		moveValue = nullptr;
 	}
 	else
 	{
-		delete* state;
-		*state = nullptr;
+		delete* move;
+		*move = nullptr;
 	}
 	return board;
 }
 
-char** turn(char player, char** board, int boardSize, boardState** state, bool& hasMoved)
+char** turn(char player, char** board, int boardSize, moveInfo** state, bool& hasMoved)
 {
 	while (true)
 	{
@@ -275,7 +275,7 @@ void startGame()
 {
 	int boardSize = chooseBoardSize();
 	char** board = getBoard(boardSize);
-	boardState** initialState = new boardState*[1];
+	moveInfo** initialState = new moveInfo*[1];
 	initialState[0] = nullptr;
 	printBoard(board, boardSize);
 	clearInputBuffer();

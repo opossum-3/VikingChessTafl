@@ -12,7 +12,7 @@ const int LARGE_BOARD_PIECE_COUNT = 32;
 const int CELL_WIDTH = 6;
 const int CELL_HEIGHT = 4;
 
-const char TO_LETTER = 'A';
+const char TO_CAPITAL_LETTER = 'A';
 const char TO_SMALL_LETTER = 'a';
 
 const char TO_LOWER = 'a' - 'A';

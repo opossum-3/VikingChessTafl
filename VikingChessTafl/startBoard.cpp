@@ -6,7 +6,7 @@ using namespace std;
 void positionDefenders(char** board, int boardSize)
 {
 	int center = boardSize / 2;
-	int padding = boardSize == 13 ? 3 : 2;
+	int padding = boardSize == LARGE_BOARD_SIZE ? 3 : 2;
 	for (int i = -padding; i <= padding; i++)
 	{
 		if (i == 0)
@@ -189,7 +189,7 @@ void printBoard(char** board, int boardSize)
 	{
 		if (i % CELL_WIDTH == CELL_WIDTH / 2)
 		{
-			char output = (i / CELL_WIDTH) + TO_LETTER;
+			char output = (i / CELL_WIDTH) + TO_CAPITAL_LETTER;
 			cout << output;
 		}
 		else
