@@ -167,6 +167,15 @@ char** getBoardImage(char** board, int boardSize)
 	return boardImage;
 }
 
+void deleteBoardImage(char** image, int boardSize)
+{
+	for (int i = 0; i < boardSize; i++)
+	{
+		delete[] image[i];
+	}
+	delete[] image;
+}
+
 void printBoard(char** board, int boardSize)
 {
 	char** image = getBoardImage(board, boardSize);
@@ -198,11 +207,6 @@ void printBoard(char** board, int boardSize)
 		}
 	}
 	cout << endl;
-	for (int i = 0; i < boardSize; i++)
-	{
-		delete[] image[i];
-	}
-	delete[] image;
 }
 
 int chooseBoardSize()

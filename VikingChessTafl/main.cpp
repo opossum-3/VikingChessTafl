@@ -4,21 +4,9 @@
 #include "textFunctions.h"
 #include "constants.h"
 #include "gameInfo.h"
+#include "consoleFunctions.h"
 #include "main.h"
 using namespace std;
-
-void clearConsole()
-{
-	cout << "\033[;H"; // Moves cursor to the top left
-	cout << "\033[J"; // Clears the console
-}
-
-void clearInputBuffer()
-{
-	cin.clear();	// Clears error flags from the cin
-	cin.sync();		// Discards unread characters from the input buffer
-	cin.ignore();	// Discards characters from the input buffer
-}
 
 int startInput()
 {
@@ -146,8 +134,9 @@ void deleteMoveInfo(moveInfo** moves)
 	moveInfo* next = current->next;
 	while (next != nullptr)
 	{
-		next = current->next;
 		delete current;
+		current = next;
+		next = current->next;
 	}
 	delete current;
 	delete moves;
