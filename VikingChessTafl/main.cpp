@@ -20,7 +20,6 @@
 #include "constants.h"
 #include "gameInfo.h"
 #include "consoleFunctions.h"
-#include "main.h"
 using namespace std;
 
 int startInput()
