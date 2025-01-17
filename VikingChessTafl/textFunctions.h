@@ -14,7 +14,6 @@
 */
 
 #pragma once
-#define textFunctions
 
 int stringLength(const char* text);
 bool isPrefix(const char* prefix, const char* text);

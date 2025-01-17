@@ -14,7 +14,6 @@
 */
 
 #pragma once
-#define startBoard
 
 char** getBoard(int boardSize);
 int chooseBoardSize();
