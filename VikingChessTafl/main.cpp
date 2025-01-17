@@ -261,7 +261,7 @@ void startGame()
 	}
 }
 
-int main()
+void initializeGame()
 {
 	cout << "Tafl - Viking chess" << endl;
 	cout << endl;
@@ -281,4 +281,9 @@ int main()
 			break;
 		}
 	}
+}
+
+int main()
+{
+	initializeGame();
 }
