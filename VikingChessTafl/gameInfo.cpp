@@ -92,7 +92,7 @@ bool isNullOrAttacker(char** board, int row, int column, int boardSize)
 	{
 		return true;
 	}
-	return board[row][column] == 'A';
+	return board[row][column] == 'A' || board[row][column] == 'X';
 }
 
 bool isKingSurrounded(char** board, int boardSize)
